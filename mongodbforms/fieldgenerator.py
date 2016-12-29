@@ -19,6 +19,7 @@ from django.utils.text import capfirst
 
 from mongoengine import (ReferenceField as MongoReferenceField,
                          EmbeddedDocumentField as MongoEmbeddedDocumentField,
+                         GenericEmbeddedDocumentField as MongoGenericEmbeddedDocumentField,
                          ListField as MongoListField,
                          MapField as MongoMapField)
 
@@ -81,7 +82,7 @@ class MongoFormFieldGenerator(object):
         # do not handle embedded documents here. They are more or less special
         # and require some form of inline formset or something more complex
         # to handle then a simple field
-        if isinstance(field, MongoEmbeddedDocumentField):
+        if isinstance(field, (MongoEmbeddedDocumentField, MongoGenericEmbeddedDocumentField)):
             return
         
         attr_name = 'generate_%s' % field.__class__.__name__.lower()
@@ -322,7 +323,7 @@ class MongoFormFieldGenerator(object):
     def generate_listfield(self, field, **kwargs):
         # We can't really handle embedded documents here.
         # So we just ignore them
-        if isinstance(field.field, MongoEmbeddedDocumentField):
+        if isinstance(field.field, (MongoEmbeddedDocumentField, MongoGenericEmbeddedDocumentField)):
             return
         
         defaults = {
@@ -355,7 +356,7 @@ class MongoFormFieldGenerator(object):
     def generate_mapfield(self, field, **kwargs):
         # We can't really handle embedded documents here.
         # So we just ignore them
-        if isinstance(field.field, MongoEmbeddedDocumentField):
+        if isinstance(field.field, (MongoEmbeddedDocumentField, MongoGenericEmbeddedDocumentField)):
             return
             
         map_key = 'mapfield'
